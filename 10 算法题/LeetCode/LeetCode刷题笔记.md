@@ -429,3 +429,61 @@ class Solution {
 
 
 
+
+
+# 动态规划-tag
+
+#### [1220. 统计元音字母序列的数目](https://leetcode-cn.com/problems/count-vowels-permutation/)
+
+![image-20220117004700601](LeetCode%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0.assets/image-20220117004700601.png)
+
+
+
+首先，分析出5种情况，aeiou，动态规划
+
+dp\[i][j] 代表以字母j结尾的长度为i的合法字符串个数
+
+其中 j 的 0 1 2 3 4 分别代表a e i o u
+
+
+
+原题意等价为
+
+![image-20220117005100139](LeetCode%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0.assets/image-20220117005100139.png)
+
+
+
+~~~java
+class Solution {
+    public int countVowelPermutation(int n) {
+        long mod = 1000000007;
+        long[] dp = new long[5];
+        long[] ndp = new long[5];
+        for (int i = 0; i < 5; ++i) {
+            dp[i] = 1;
+        }
+        for (int i = 2; i <= n; ++i) {
+            /* a前面可以为e,u,i */
+            ndp[0] = (dp[1] + dp[2] + dp[4]) % mod;
+            /* e前面可以为a,i */
+            ndp[1] = (dp[0] + dp[2]) % mod;
+            /* i前面可以为e,o */
+            ndp[2] = (dp[1] + dp[3]) % mod;
+            /* o前面可以为i */
+            ndp[3] = dp[2];
+            /* u前面可以为i,o */
+            ndp[4] = (dp[2] + dp[3]) % mod;
+            // System.arraycopy(ndp, 0, dp, 0, 5);
+            for(int k=0;k<5;k++){
+                dp[k]=ndp[k];
+            }
+        }
+        long ans = 0;
+        for (int i = 0; i < 5; ++i) {
+            ans = (ans + dp[i]) % mod;
+        }
+        return (int)ans;
+    }
+}
+~~~
+
